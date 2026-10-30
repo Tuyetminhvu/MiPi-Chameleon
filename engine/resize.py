@@ -780,6 +780,9 @@ def _fit_in_box(e):
 
 
 def fallback(src, W, H, bgs, decor):
+    _LAY.clear()
+    _CW.clear()
+    _FIT.clear()
     """Step-1 letterbox: one uniform scale, centred. Always compliant; used only if the
     search finds nothing (never happened on the 57 test cases)."""
     sw, sh = src["canvas"]["width"], src["canvas"]["height"]
@@ -799,11 +802,11 @@ def fallback(src, W, H, bgs, decor):
 
 def _candidates(tree, C):
     scored = []
-    for st, cost in structures(tree):
+    for index, (st, cost) in enumerate(structures(tree)):
         r = solve(st, C, 1.0, 1.0)
         if r:
             P, S, lvl = r
-            scored.append((score(st, P, S, lvl, cost, C, None)[0], id(st), st, cost))
+            scored.append((score(st, P, S, lvl, cost, C, None)[0], index, st, cost))
     return scored
 
 
