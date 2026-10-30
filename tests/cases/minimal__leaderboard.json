@@ -1,0 +1,41 @@
+{
+ "task_id": "minimal__leaderboard",
+ "source": {
+  "canvas": {
+   "width": 1200,
+   "height": 628
+  },
+  "elements": [
+   {
+    "id": "bg_rect",
+    "type": "shape",
+    "x": 0,
+    "y": 0,
+    "width": 1200,
+    "height": 628,
+    "z_index": 0,
+    "shape_type": "rectangle",
+    "fill_color": "rgba(43,27,46,1)"
+   },
+   {
+    "id": "msg",
+    "type": "text",
+    "x": 100,
+    "y": 214,
+    "width": 1000,
+    "height": 200,
+    "z_index": 5,
+    "content": "Golden hour, bottled.",
+    "font_family": "Solstice Serif",
+    "font_size": 96,
+    "color": "rgba(255,255,255,1)",
+    "text_align": "center",
+    "font_weight": "bold"
+   }
+  ]
+ },
+ "target_canvas": {
+  "width": 728,
+  "height": 90
+ }
+}

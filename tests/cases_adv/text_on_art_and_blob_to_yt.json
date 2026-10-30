@@ -1,0 +1,91 @@
+{
+ "task_id": "text_on_art_and_blob_to_yt",
+ "source": {
+  "canvas": {
+   "width": 1080,
+   "height": 1080
+  },
+  "elements": [
+   {
+    "id": "bg_rect",
+    "type": "shape",
+    "x": 0,
+    "y": 0,
+    "width": 1080,
+    "height": 1080,
+    "z_index": 0,
+    "shape_type": "rectangle",
+    "fill_color": "rgba(250,240,225,1)"
+   },
+   {
+    "id": "art",
+    "type": "image",
+    "x": 200,
+    "y": 80,
+    "width": 700,
+    "height": 700,
+    "z_index": 1,
+    "asset_id": "solstice_bottle.png",
+    "fit": "contain"
+   },
+   {
+    "id": "headline",
+    "type": "text",
+    "x": 120,
+    "y": 300,
+    "width": 840,
+    "height": 200,
+    "z_index": 5,
+    "content": "BOLD OVER THE BOTTLE",
+    "font_family": "Solstice Serif",
+    "font_size": 88,
+    "color": "rgba(43,27,46,1)",
+    "text_align": "center",
+    "font_weight": "bold"
+   },
+   {
+    "id": "blob",
+    "type": "shape",
+    "x": 620,
+    "y": 760,
+    "width": 520,
+    "height": 360,
+    "z_index": 2,
+    "shape_type": "ellipse",
+    "fill_color": "rgba(43,27,46,1)"
+   },
+   {
+    "id": "blob_text",
+    "type": "text",
+    "x": 660,
+    "y": 860,
+    "width": 380,
+    "height": 120,
+    "z_index": 5,
+    "content": "Text sits on a dark blob that is NOT grouped",
+    "font_family": "Solstice Sans",
+    "font_size": 30,
+    "color": "rgba(255,255,255,1)",
+    "text_align": "left"
+   },
+   {
+    "id": "dark_note",
+    "type": "text",
+    "x": 60,
+    "y": 860,
+    "width": 520,
+    "height": 120,
+    "z_index": 5,
+    "content": "Dark text on cream, left of the blob.",
+    "font_family": "Solstice Sans",
+    "font_size": 32,
+    "color": "rgba(43,27,46,1)",
+    "text_align": "left"
+   }
+  ]
+ },
+ "target_canvas": {
+  "width": 1280,
+  "height": 720
+ }
+}

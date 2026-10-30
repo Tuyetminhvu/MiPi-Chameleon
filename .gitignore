@@ -20,3 +20,4 @@ venv/
 # Generated run artifacts
 output/*
 !output/.gitkeep
+runs/
