@@ -28,6 +28,7 @@ from renderer.converter import convert as conv  # noqa: E402
 from renderer.converter.wrap import char_widths, wrap_text  # noqa: E402
 
 ABS_FLOOR = 6   # px. Hard minimum for any text: x-height ~3.3px (Sans) / 3.0px (Serif) at 1x raster.
+GROW = 1.6  # max scale relative to natural; 1.6 lets sparse designs fill their canvas
 EMERGENCY_FLOORS = (5, 4)   # over-constrained mode only, and only for below-median-importance text
 _FM = None
 _TF = {}
@@ -62,7 +63,7 @@ def text_layout(el, fs, width):
     """Exactly what the converter + renderer do: wrap at float size (we only use ints),
     draw at int size + letter_spacing. Returns (lines, max_line_w, block_h)."""
     content = str(el.get("content", ""))
-    key = (id(el), fs, round(width, 1))
+    key = (id(el), fs, float(width))  # exact width: wrap points are sensitive to fractions of a px
     if key in _LAY:
         return _LAY[key]
     weight, style, rt = _faces(el)
@@ -104,9 +105,14 @@ def fit_text(el, fs, avail, floor=1):
             w = w - (mw - w) - 1
             if w < 0.4 * avail:
                 break
-        if fs <= floor:  # cannot fit at the floor: report true width -> candidate is infeasible
-            lines, mw, bh = text_layout(el, fs, avail)
-            return fs, max(avail, math.ceil(mw) + 1), bh, lines
+        if fs <= floor:  # cannot fit at the floor: report the TRUE width -> candidate is infeasible
+            bw = avail
+            for _ in range(6):  # the renderer wraps without letter_spacing, so re-check at each width
+                lines, mw, bh = text_layout(el, fs, bw)
+                if mw <= bw + 0.5:
+                    break
+                bw = math.ceil(mw) + 1
+            return fs, max(avail, bw), bh, lines
         fs = max(floor, fs - 1 if fs < 24 else int(fs * 0.93))
 
 
@@ -453,6 +459,7 @@ class Ctx:
         self.imp_med = 0.0
         self.fmin_text = 1.0
         self.bump = True        # hierarchy +1px rule (dropped only in the very last stage)
+        self.rigid_strict = True  # rigid groups (rotated/stickers) must keep text at the floor
         self.aw, self.ah = W - 2 * self.m, H - 2 * self.m
 
     def text_floor(self, L, floor, src_fs):
@@ -468,7 +475,7 @@ def leaf_scale(L, P, C):
     s, rho, gam, floor = P
     bw, bh = L["box"][2] - L["box"][0], L["box"][3] - L["box"][1]
     if L["has_text"]:
-        sb = min(s * rho * (C.fref / L["ftop"]) ** (1 - gam), max(s * rho, 1.25 * C.snat))
+        sb = min(s * rho * (C.fref / L["ftop"]) ** (1 - gam), max(s * rho, max(1.25, GROW) * C.snat))
         sb = max(sb, floor / L["fmin"])
     else:
         sb = s
@@ -489,14 +496,14 @@ def size(n, avail, P, C, S):
         if n["kind"] == "text":
             e = n["els"][0]
             s, rho, gam, floor = P
-            k = min(s * rho * (C.fref / e["font_size"]) ** (1 - gam), max(s * rho, 1.25 * C.snat))
+            k = min(s * rho * (C.fref / e["font_size"]) ** (1 - gam), max(s * rho, max(1.25, GROW) * C.snat))
             fl = C.text_floor(n, floor, e["font_size"])
             want = max(fl, round(k * e["font_size"]))
             fs, bw, bh, lines = fit_text(e, want, max(avail, 1), fl)
             S[id(n)] = (bw, math.ceil(bh), fs, lines)
         else:
             sb = leaf_scale(n, P, C)
-            bad = n["has_text"] and sb * n["fmin"] < C.text_floor(n, P[3], 0) - 0.01  # rigid text under floor
+            bad = C.rigid_strict and n["has_text"] and sb * n["fmin"] < C.text_floor(n, P[3], 0) - 0.01
             S[id(n)] = ((n["box"][2] - n["box"][0]) * sb + (1e6 if bad else 0), (n["box"][3] - n["box"][1]) * sb, sb)
         return S[id(n)][:2]
     g = C.g
@@ -538,7 +545,7 @@ def solve(st, C, rho, gam, floors=None):
     are passed explicitly); binary search the global scale s."""
     floors = floors or [max(ABS_FLOOR, int(C.floor0 * m)) for m in (1.0, 0.85, 0.7)] + [ABS_FLOOR]
     for lvl, floor in enumerate(floors):
-        lo, hi = C.snat * 0.02, C.snat * 1.15
+        lo, hi = C.snat * 0.02, C.snat * GROW
         ok, S = feasible(st, (hi, rho, gam, floor), C)
         if ok:
             return (hi, rho, gam, floor), S, lvl
@@ -702,8 +709,11 @@ def finish(out, src, bgs, decor, W, H):
                            x=cx - d["width"] * k / 2, y=cy - d["height"] * k / 2)
     for e in out["elements"]:
         clamp_inside(e, W, H)
-        for f in ("x", "y", "width", "height"):
+        for f in ("x", "y"):
             e[f] = round(float(e[f]), 2)
+        for f in ("width", "height"):  # round sizes UP so a text box never ends a hair too narrow
+            e[f] = math.ceil(float(e[f]) * 100 - 1e-6) / 100
+        clamp_inside(e, W, H, allow_shrink=False)
     return out
 
 
@@ -782,11 +792,12 @@ def _engine(src, W, H):
     imps = sorted(L["imp"] for L in leaves_of({"kids": leaves}) if L.get("has_text") or L.get("o") == "C")
     imp_med = imps[len(imps) // 2] if imps else 0.0
 
-    def ctx(compact=False, low=None, everyone=False):
+    def ctx(compact=False, low=None, everyone=False, rigid_strict=True):
         C = Ctx(W, H, src["canvas"]["width"], src["canvas"]["height"], fmax, compact=compact)
         C.fmin_text, C.low_floor = fmin_text, low
         C.imp_med = float("inf") if everyone else imp_med
         C.bump = not everyone
+        C.rigid_strict = rigid_strict
         return C
 
     # Over-constrained policy -- what gives, in order (never hide, overflow, go off-canvas,
@@ -799,6 +810,8 @@ def _engine(src, W, H):
               ("backdrop", ctx(True), flow_txt)]
     stages += [("emergency%d" % f, ctx(True, f), flow_txt) for f in EMERGENCY_FLOORS]
     stages += [("emergency%d_all" % f, ctx(True, f, everyone=True), flow_txt) for f in EMERGENCY_FLOORS]
+    # last resort before the letterbox: rigid/rotated groups may shrink below the floor
+    stages += [("last_resort", ctx(True, EMERGENCY_FLOORS[-1], everyone=True, rigid_strict=False), flow_txt)]
     for stage, C, flow in stages:
         scored = _candidates(xycut(flow), C)
         if scored:
