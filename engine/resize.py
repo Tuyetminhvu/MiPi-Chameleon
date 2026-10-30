@@ -34,7 +34,9 @@ _FM = None
 _TF = {}
 _CW = {}
 _LAY = {}
+_FIT = {}
 ASSET_SIZE = {}
+_ASSET_EXISTS = {}
 
 
 def fm():
@@ -89,7 +91,7 @@ def text_layout(el, fs, width):
     return res
 
 
-def fit_text(el, fs, avail, floor=1):
+def _fit_text_uncached(el, fs, avail, floor=1):
     """Largest integer font <= fs whose wrapped block fits avail width (no overflow,
     letter-spacing included). Returns (fs, box_w, block_h, lines)."""
     fs = max(1, int(fs))
@@ -114,6 +116,15 @@ def fit_text(el, fs, avail, floor=1):
                 bw = math.ceil(mw) + 1
             return fs, max(avail, bw), bh, lines
         fs = max(floor, fs - 1 if fs < 24 else int(fs * 0.93))
+
+
+def fit_text(el, fs, avail, floor=1):
+    fs = max(1, int(fs))
+    floor = int(floor)
+    key = (id(el), fs, float(avail), floor)
+    if key not in _FIT:
+        _FIT[key] = _fit_text_uncached(el, fs, avail, floor)
+    return _FIT[key]
 
 
 # ------------------------------------------------------------------ geometry helpers
@@ -149,7 +160,12 @@ def eff_opacity(el):
 
 
 def missing(el):
-    return el["type"] == "image" and not (REPO / "brand_kit" / "assets" / str(el.get("asset_id", ""))).is_file()
+    if el["type"] != "image":
+        return False
+    aid = str(el.get("asset_id", ""))
+    if aid not in _ASSET_EXISTS:
+        _ASSET_EXISTS[aid] = (REPO / "brand_kit" / "assets" / aid).is_file()
+    return not _ASSET_EXISTS[aid]
 
 
 def asset_size(aid):
@@ -361,6 +377,8 @@ def leaves_of(n):
 
 def need(n):
     """Ink area a subtree's text wants (chars x fs^2) -> share of width in an H stack."""
+    if "_need_cache" in n:
+        return n["_need_cache"]
     a = 0.0
     for L in leaves_of(n):
         for e in L["els"]:
@@ -368,11 +386,17 @@ def need(n):
                 a += max(4, len(str(e.get("content", "")))) * e["font_size"] ** 2 * 0.6
             else:
                 a += 0.5 * (L["box"][2] - L["box"][0]) * (L["box"][3] - L["box"][1]) / max(1, len(L["els"]))
-    return math.sqrt(max(a, 1.0))
+    value = math.sqrt(max(a, 1.0))
+    n["_need_cache"] = value
+    return value
 
 
 def has_flex(n):
-    return any(L["kind"] == "text" for L in leaves_of(n))
+    if "_flex_cache" in n:
+        return n["_flex_cache"]
+    value = any(L["kind"] == "text" for L in leaves_of(n))
+    n["_flex_cache"] = value
+    return value
 
 
 # ------------------------------------------------------------------ candidate structures
@@ -756,6 +780,9 @@ def _fit_in_box(e):
 
 
 def fallback(src, W, H, bgs, decor):
+    _LAY.clear()
+    _CW.clear()
+    _FIT.clear()
     """Step-1 letterbox: one uniform scale, centred. Always compliant; used only if the
     search finds nothing (never happened on the 57 test cases)."""
     sw, sh = src["canvas"]["width"], src["canvas"]["height"]
@@ -775,11 +802,11 @@ def fallback(src, W, H, bgs, decor):
 
 def _candidates(tree, C):
     scored = []
-    for st, cost in structures(tree):
+    for index, (st, cost) in enumerate(structures(tree)):
         r = solve(st, C, 1.0, 1.0)
         if r:
             P, S, lvl = r
-            scored.append((score(st, P, S, lvl, cost, C, None)[0], id(st), st, cost))
+            scored.append((score(st, P, S, lvl, cost, C, None)[0], index, st, cost))
     return scored
 
 
@@ -843,6 +870,7 @@ def _engine(src, W, H):
 def resize(source, target_canvas):
     _LAY.clear()
     _CW.clear()
+    _FIT.clear()
     W, H = int(target_canvas["width"]), int(target_canvas["height"])
     src = copy.deepcopy(source)  # never touch the caller's dict
     try:
