@@ -1,0 +1,104 @@
+{
+ "task_id": "diagonal_stagger_to_banner",
+ "source": {
+  "canvas": {
+   "width": 1080,
+   "height": 1080
+  },
+  "elements": [
+   {
+    "id": "bg",
+    "type": "image",
+    "x": 0,
+    "y": 0,
+    "width": 1080,
+    "height": 1080,
+    "z_index": 0,
+    "asset_id": "solstice_bg_gradient.png",
+    "fit": "cover"
+   },
+   {
+    "id": "d0",
+    "type": "image",
+    "x": 40,
+    "y": 40,
+    "width": 260,
+    "height": 260,
+    "z_index": 3,
+    "asset_id": "solstice_bottle.png",
+    "fit": "contain"
+   },
+   {
+    "id": "d1",
+    "type": "text",
+    "x": 190,
+    "y": 190,
+    "width": 300,
+    "height": 200,
+    "z_index": 5,
+    "content": "Stagger step 1, overlapping bands",
+    "font_family": "Solstice Sans",
+    "font_size": 34,
+    "color": "rgba(255,255,255,1)",
+    "text_align": "left",
+    "font_weight": "bold"
+   },
+   {
+    "id": "d2",
+    "type": "image",
+    "x": 340,
+    "y": 340,
+    "width": 260,
+    "height": 260,
+    "z_index": 3,
+    "asset_id": "solstice_bottle.png",
+    "fit": "contain"
+   },
+   {
+    "id": "d3",
+    "type": "text",
+    "x": 490,
+    "y": 490,
+    "width": 300,
+    "height": 200,
+    "z_index": 5,
+    "content": "Stagger step 3, overlapping bands",
+    "font_family": "Solstice Sans",
+    "font_size": 34,
+    "color": "rgba(255,255,255,1)",
+    "text_align": "left",
+    "font_weight": "bold"
+   },
+   {
+    "id": "d4",
+    "type": "image",
+    "x": 640,
+    "y": 640,
+    "width": 260,
+    "height": 260,
+    "z_index": 3,
+    "asset_id": "solstice_bottle.png",
+    "fit": "contain"
+   },
+   {
+    "id": "d5",
+    "type": "text",
+    "x": 790,
+    "y": 790,
+    "width": 300,
+    "height": 200,
+    "z_index": 5,
+    "content": "Stagger step 5, overlapping bands",
+    "font_family": "Solstice Sans",
+    "font_size": 34,
+    "color": "rgba(255,255,255,1)",
+    "text_align": "left",
+    "font_weight": "bold"
+   }
+  ]
+ },
+ "target_canvas": {
+  "width": 1584,
+  "height": 396
+ }
+}

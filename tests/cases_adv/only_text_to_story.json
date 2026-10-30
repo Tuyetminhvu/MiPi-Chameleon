@@ -1,0 +1,29 @@
+{
+ "task_id": "only_text_to_story",
+ "source": {
+  "canvas": {
+   "width": 1200,
+   "height": 628
+  },
+  "elements": [
+   {
+    "id": "only",
+    "type": "text",
+    "x": 100,
+    "y": 200,
+    "width": 1000,
+    "height": 200,
+    "z_index": 5,
+    "content": "Only one text element and nothing else at all",
+    "font_family": "Solstice Sans",
+    "font_size": 56,
+    "color": "rgba(43,27,46,1)",
+    "text_align": "center"
+   }
+  ]
+ },
+ "target_canvas": {
+  "width": 1080,
+  "height": 1920
+ }
+}

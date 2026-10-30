@@ -1,0 +1,125 @@
+{
+ "task_id": "longcopy_to_336x280",
+ "source": {
+  "canvas": {
+   "width": 1080,
+   "height": 1350
+  },
+  "elements": [
+   {
+    "id": "bg_rect",
+    "type": "shape",
+    "x": 0,
+    "y": 0,
+    "width": 1080,
+    "height": 1350,
+    "z_index": 0,
+    "shape_type": "rectangle",
+    "fill_color": "rgba(43,27,46,1)"
+   },
+   {
+    "id": "title",
+    "type": "text",
+    "x": 60,
+    "y": 50,
+    "width": 960,
+    "height": 140,
+    "z_index": 5,
+    "content": "Notes From the Distillery: A Long Letter About Light",
+    "font_family": "Solstice Serif",
+    "font_size": 54,
+    "color": "rgba(255,255,255,1)",
+    "text_align": "left",
+    "font_weight": "bold"
+   },
+   {
+    "id": "para0",
+    "type": "text",
+    "x": 60,
+    "y": 220,
+    "width": 960,
+    "height": 150,
+    "z_index": 5,
+    "content": "Every bottle starts with a single question: what does the last hour of sunlight taste like? We answer it with honey, citrus and herbs.",
+    "font_family": "Solstice Sans",
+    "font_size": 28,
+    "color": "rgba(250,240,225,1)",
+    "text_align": "left"
+   },
+   {
+    "id": "para1",
+    "type": "text",
+    "x": 60,
+    "y": 390,
+    "width": 960,
+    "height": 150,
+    "z_index": 5,
+    "content": "Our blenders forage rosemary from the hills behind the distillery and press blood oranges within hours of picking them from the grove.",
+    "font_family": "Solstice Sans",
+    "font_size": 28,
+    "color": "rgba(250,240,225,1)",
+    "text_align": "left"
+   },
+   {
+    "id": "para2",
+    "type": "text",
+    "x": 60,
+    "y": 560,
+    "width": 960,
+    "height": 150,
+    "z_index": 5,
+    "content": "Nothing artificial ever touches the bottle. No syrups, no concentrates, no shortcuts, just slow infusions that take eleven days to finish.",
+    "font_family": "Solstice Sans",
+    "font_size": 28,
+    "color": "rgba(250,240,225,1)",
+    "text_align": "left"
+   },
+   {
+    "id": "para3",
+    "type": "text",
+    "x": 60,
+    "y": 730,
+    "width": 960,
+    "height": 150,
+    "z_index": 5,
+    "content": "Each batch is numbered by hand and tasted by the whole team before it ships, which is why some weeks we simply release nothing at all.",
+    "font_family": "Solstice Sans",
+    "font_size": 28,
+    "color": "rgba(250,240,225,1)",
+    "text_align": "left"
+   },
+   {
+    "id": "para4",
+    "type": "text",
+    "x": 60,
+    "y": 900,
+    "width": 960,
+    "height": 150,
+    "z_index": 5,
+    "content": "Find us at farmers markets across the coast every Saturday morning, or order a mixed case online with free delivery on orders over forty.",
+    "font_family": "Solstice Sans",
+    "font_size": 28,
+    "color": "rgba(250,240,225,1)",
+    "text_align": "left"
+   },
+   {
+    "id": "para5",
+    "type": "text",
+    "x": 60,
+    "y": 1070,
+    "width": 960,
+    "height": 150,
+    "z_index": 5,
+    "content": "Subscribers get first access to seasonal releases, invitations to rooftop tastings, and a handwritten note from the blender every quarter.",
+    "font_family": "Solstice Sans",
+    "font_size": 28,
+    "color": "rgba(250,240,225,1)",
+    "text_align": "left"
+   }
+  ]
+ },
+ "target_canvas": {
+  "width": 336,
+  "height": 280
+ }
+}

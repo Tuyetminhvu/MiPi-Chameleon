@@ -1,0 +1,99 @@
+{
+ "task_id": "mixed_aspects_to_story",
+ "source": {
+  "canvas": {
+   "width": 1920,
+   "height": 1080
+  },
+  "elements": [
+   {
+    "id": "bg_rect",
+    "type": "shape",
+    "x": 0,
+    "y": 0,
+    "width": 1920,
+    "height": 1080,
+    "z_index": 0,
+    "shape_type": "rectangle",
+    "fill_color": "rgba(250,240,225,1)"
+   },
+   {
+    "id": "strip",
+    "type": "image",
+    "x": 80,
+    "y": 60,
+    "width": 1200,
+    "height": 300,
+    "z_index": 2,
+    "asset_id": "solstice_bg_gradient.png",
+    "fit": "fill"
+   },
+   {
+    "id": "square",
+    "type": "image",
+    "x": 80,
+    "y": 420,
+    "width": 520,
+    "height": 500,
+    "z_index": 3,
+    "asset_id": "solstice_bottle.png",
+    "fit": "contain"
+   },
+   {
+    "id": "tall_missing",
+    "type": "image",
+    "x": 1400,
+    "y": 60,
+    "width": 420,
+    "height": 960,
+    "z_index": 3,
+    "asset_id": "lifestyle_portrait_7x16.png",
+    "fit": "contain"
+   },
+   {
+    "id": "logo",
+    "type": "image",
+    "x": 680,
+    "y": 440,
+    "width": 600,
+    "height": 200,
+    "z_index": 3,
+    "asset_id": "solstice_logo_lockup.png",
+    "fit": "contain"
+   },
+   {
+    "id": "headline",
+    "type": "text",
+    "x": 680,
+    "y": 680,
+    "width": 640,
+    "height": 160,
+    "z_index": 5,
+    "content": "One Summer, Four Shapes",
+    "font_family": "Solstice Serif",
+    "font_size": 64,
+    "color": "rgba(43,27,46,1)",
+    "text_align": "left",
+    "font_weight": "bold"
+   },
+   {
+    "id": "caption",
+    "type": "text",
+    "x": 680,
+    "y": 860,
+    "width": 640,
+    "height": 80,
+    "z_index": 5,
+    "content": "Strip, square, tower and lockup must all survive.",
+    "font_family": "Solstice Sans",
+    "font_size": 26,
+    "color": "rgba(43,27,46,1)",
+    "text_align": "left"
+   }
+  ]
+ },
+ "target_canvas": {
+  "width": 1080,
+  "height": 1920
+ }
+}
