@@ -97,3 +97,17 @@ hosted model, bake its weights into the image during the build step.
 - `chameleon_design_schema_v0.9.json` — full input/output field spec
 - `RULES.md` — what's checked, what's graded, and what disqualifies a submission
 - FAQ — for anything not covered above
+
+## Our approach
+
+`engine/resize.py` re-lays out the design instead of stretching it:
+
+1. **Understand the design from geometry only.** Elements that cover the canvas become the background. Grouped elements, heavily overlapping elements and text sitting on a shape (buttons, badges, panels) are kept together as units. No ids or labels are used.
+2. **Find the structure.** The units are split recursively into rows and columns based on the gaps between them, so reading order is preserved.
+3. **Search layouts.** The engine tries up to 400 rearrangements (rows vs columns, flipping sub-groups, wrapping into 2-4 tracks). For each one it finds the largest scale where everything fits, measuring text with the official renderer's own fonts and wrapping.
+4. **Pick the best.** Each layout is scored on keeping important things large, readability, size hierarchy, use of space and closeness to the original arrangement.
+5. **Under extreme pressure** (e.g. 17 elements into 320x50) it never hides, overlaps text or goes off-canvas. It shrinks margins, moves images behind the text, and only then lets less important text get smaller.
+
+Images always keep their proportions and pixels; text content and fonts are never changed. If anything unexpected happens, the engine falls back to a simple uniform scaling that always passes the structural checks.
+
+**Run:** `pip install -r requirements.txt` then `python -m engine.main` (or with Docker as above).
